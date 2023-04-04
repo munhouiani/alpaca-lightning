@@ -63,7 +63,7 @@ class AlpacaLightningModule(LightningModule):
         self.model.resize_token_embeddings(len(self.tokenizer))
 
     def _step(self, batch):
-        outputs = self(**batch)
+        outputs = self(batch)
         loss = outputs.loss
         return loss
 

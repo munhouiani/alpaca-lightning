@@ -5,6 +5,8 @@ prepare-env:
 	poetry env use 3.10
 	@echo "Install dependencies"
 	poetry install --without dev
+	@echo "Add Lightning Logs Folders"
+	mkdir -p lightning_logs
 
 .PHONY: train
 train:

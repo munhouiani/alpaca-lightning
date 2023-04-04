@@ -45,7 +45,7 @@ if __name__ == "__main__":
         max_epochs=max_epochs,
         deterministic=True,
         strategy="fsdp",
-        precision=16,
+        precision="16-mixed",
     )
 
     # Auto log all Mlflow entities
