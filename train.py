@@ -53,5 +53,6 @@ if __name__ == "__main__":
         logger=[csv_logger, mlflow_logger],
     )
 
+    trainer.fit(alpaca_model, alpaca_datamodule)
     alpaca_model.save_hf_checkpoint("alpaca_model_huggingface_checkpoint")
     trainer.save_checkpoint("alpaca_model_lightning_checkpoint")
