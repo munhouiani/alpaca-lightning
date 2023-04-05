@@ -6,7 +6,7 @@ prepare-env:
 	@echo "Install dependencies"
 	poetry install --without dev
 	@echo "Add Lightning Logs Folders"
-	mkdir -p lightning_logs
+	mkdir -p alpaca_logs/lightning_logs
 
 .PHONY: train
 train:
