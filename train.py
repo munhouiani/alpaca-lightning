@@ -1,5 +1,5 @@
-import mlflow.pytorch
 from lightning.pytorch import Trainer, seed_everything
+from lightning.pytorch.loggers import MLFlowLogger, CSVLogger
 
 from alpaca.dataset import AlpacaLightningDataModule
 from alpaca.model import AlpacaLightningModule, get_llama_tokenizer
@@ -17,9 +17,6 @@ if __name__ == "__main__":
 
     # seed for reproducibility
     seed_everything(42)
-
-    # mlflow logging path
-    mlflow.set_tracking_uri("file:./alpaca_mlruns")
 
     tokenizer = get_llama_tokenizer(
         pretrained_model_name=pretrained_model_name,
@@ -39,6 +36,13 @@ if __name__ == "__main__":
         load_weights_from_hf_pretrained_model=load_weights_from_hf_pretrained_model,
     )
 
+    # init logger
+    mlflow_logger = MLFlowLogger(
+        experiment_name="alpaca_finetuning",
+        tracking_uri="file:./alpaca_mlruns",
+        log_model="all",
+    )
+    csv_logger = CSVLogger(save_dir="alpaca_logs")
     trainer = Trainer(
         accelerator="auto",
         devices="auto",
@@ -46,19 +50,8 @@ if __name__ == "__main__":
         deterministic=True,
         strategy="fsdp",
         precision="16-mixed",
+        logger=[csv_logger, mlflow_logger],
     )
-
-    # Auto log all Mlflow entities
-    mlflow.pytorch.autolog()
-
-    with mlflow.start_run(run_name="alpaca_fine_tuning") as run:
-        trainer.fit(alpaca_model, alpaca_datamodule)
 
     alpaca_model.save_hf_checkpoint("alpaca_model_huggingface_checkpoint")
     trainer.save_checkpoint("alpaca_model_lightning_checkpoint")
-    mlflow.log_artifact(
-        "alpaca_model_huggingface_checkpoint", "alpaca_model_huggingface_checkpoint"
-    )
-    mlflow.log_artifact(
-        "alpaca_model_lightning_checkpoint", "alpaca_model_lightning_checkpoint"
-    )

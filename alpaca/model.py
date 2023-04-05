@@ -1,6 +1,6 @@
 import math
 from pathlib import Path
-from typing import Dict, Any, Union
+from typing import Any, Union
 
 import torch
 import transformers
@@ -44,6 +44,9 @@ class AlpacaLightningModule(LightningModule):
         # save parameters
         self.save_hyperparameters()
 
+        # log hyperparameters
+        self.logger.experiment.log_hyperparams(self.hparams)
+
         # init model
         self.model = None
         self.initialize_model()
@@ -73,6 +76,7 @@ class AlpacaLightningModule(LightningModule):
     def training_step(self, batch, batch_idx):
         loss = self._step(batch)
         self.log("train_loss", loss, prog_bar=True, on_step=True, on_epoch=True)
+        self.logger.experiment.log_metrics("train_loss", loss)
 
         return {"loss": loss}
 
