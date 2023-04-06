@@ -49,7 +49,7 @@ if __name__ == "__main__":
         max_epochs=max_epochs,
         deterministic=True,
         strategy="deepspeed_stage_3_offload",
-        precision=16,
+        precision="16-mixed",
         logger=[csv_logger, mlflow_logger],
     )
 
