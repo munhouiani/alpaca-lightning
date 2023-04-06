@@ -12,7 +12,7 @@ if __name__ == "__main__":
     weight_decay = 0
     warmup_ratio = 0.03
     load_weights_from_hf_pretrained_model = True
-    batch_size = 128
+    batch_size = 4
     max_epochs = 3
 
     # seed for reproducibility
