@@ -52,7 +52,6 @@ if __name__ == "__main__":
         strategy="fsdp",
         precision="16-mixed",
         logger=[csv_logger, mlflow_logger],
-        autoscale_batch_size="binsearch",
         accumulate_grad_batches=8,
     )
     # batch size tuning
