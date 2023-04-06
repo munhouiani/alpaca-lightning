@@ -1,5 +1,6 @@
 from lightning.pytorch import Trainer, seed_everything
 from lightning.pytorch.loggers import MLFlowLogger, CSVLogger
+from lightning.pytorch.tuner import Tuner
 
 from alpaca.dataset import AlpacaLightningDataModule
 from alpaca.model import AlpacaLightningModule, get_llama_tokenizer
@@ -51,7 +52,12 @@ if __name__ == "__main__":
         strategy="fsdp",
         precision="16-mixed",
         logger=[csv_logger, mlflow_logger],
+        autoscale_batch_size="binsearch",
+        accumulate_grad_batches=8,
     )
+    # batch size tuning
+    tuner = Tuner(trainer)
+    tuner.scale_batch_size(alpaca_model, mode="power")
 
     trainer.fit(alpaca_model, alpaca_datamodule)
     alpaca_model.save_hf_checkpoint("alpaca_model_huggingface_checkpoint")
