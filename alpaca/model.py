@@ -13,6 +13,8 @@ from transformers import (
 )
 from transformers.optimization import get_cosine_schedule_with_warmup
 
+from alpaca.utils import enable_transformers_pretrained_deepspeed_sharding
+
 
 def get_llama_tokenizer(
     pretrained_model_name: str, model_max_length: int
@@ -46,9 +48,14 @@ class AlpacaLightningModule(LightningModule):
 
         # init model
         self.model = None
-        self.initialize_model()
+        # self.initialize_model()
         self.tokenizer = self.hparams.tokenizer
         self._hf_pipeline = None
+
+    def setup(self, stage: str) -> None:
+        # enable deepspeed sharding
+        enable_transformers_pretrained_deepspeed_sharding(self)
+        self.initialize_model()
 
     def initialize_model(self):
         if self.hparams.load_weights_from_hf_pretrained_model:
