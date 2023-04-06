@@ -2,8 +2,8 @@ import math
 from pathlib import Path
 from typing import Any, Union
 
-import torch
 import transformers
+from deepspeed.ops.adam import FusedAdam
 from lightning import LightningModule
 from transformers import (
     PreTrainedTokenizer,
@@ -77,7 +77,7 @@ class AlpacaLightningModule(LightningModule):
         return {"loss": loss}
 
     def configure_optimizers(self):
-        optimizer = torch.optim.AdamW(
+        optimizer = FusedAdam(
             self.trainer.model.parameters(),
             lr=self.hparams.learning_rate,
             weight_decay=self.hparams.weight_decay,

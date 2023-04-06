@@ -49,15 +49,20 @@ if __name__ == "__main__":
         devices="auto",
         max_epochs=max_epochs,
         deterministic=True,
-        strategy="fsdp",
-        precision="16-mixed",
+        strategy="deepspeed_stage_3_offload",
+        precision=16,
         logger=[csv_logger, mlflow_logger],
-        accumulate_grad_batches=8,
     )
     # batch size tuning
     tuner = Tuner(trainer)
     tuner.scale_batch_size(alpaca_model, datamodule=alpaca_datamodule, mode="power")
 
     trainer.fit(alpaca_model, alpaca_datamodule)
-    alpaca_model.save_hf_checkpoint("alpaca_model_huggingface_checkpoint")
-    trainer.save_checkpoint("alpaca_model_lightning_checkpoint")
+    try:
+        alpaca_model.save_hf_checkpoint("alpaca_model_huggingface_checkpoint")
+    except:
+        pass
+    try:
+        trainer.save_checkpoint("alpaca_model_lightning_checkpoint")
+    except:
+        pass
