@@ -57,7 +57,7 @@ if __name__ == "__main__":
     )
     # batch size tuning
     tuner = Tuner(trainer)
-    tuner.scale_batch_size(alpaca_model, mode="power")
+    tuner.scale_batch_size(alpaca_model, datamodule=alpaca_datamodule, mode="power")
 
     trainer.fit(alpaca_model, alpaca_datamodule)
     alpaca_model.save_hf_checkpoint("alpaca_model_huggingface_checkpoint")
