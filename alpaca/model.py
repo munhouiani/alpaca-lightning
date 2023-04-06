@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any, Union
 
 import transformers
-from deepspeed.ops.adam import FusedAdam
+from deepspeed.ops.adam import DeepSpeedCPUAdam
 from lightning import LightningModule
 from transformers import (
     PreTrainedTokenizer,
@@ -77,7 +77,7 @@ class AlpacaLightningModule(LightningModule):
         return {"loss": loss}
 
     def configure_optimizers(self):
-        optimizer = FusedAdam(
+        optimizer = DeepSpeedCPUAdam(
             self.trainer.model.parameters(),
             lr=self.hparams.learning_rate,
             weight_decay=self.hparams.weight_decay,
