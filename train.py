@@ -1,6 +1,5 @@
 from lightning.pytorch import Trainer, seed_everything
 from lightning.pytorch.loggers import MLFlowLogger, CSVLogger
-from lightning.pytorch.tuner import Tuner
 
 from alpaca.dataset import AlpacaLightningDataModule
 from alpaca.model import AlpacaLightningModule, get_llama_tokenizer
@@ -53,9 +52,6 @@ if __name__ == "__main__":
         precision=16,
         logger=[csv_logger, mlflow_logger],
     )
-    # batch size tuning
-    tuner = Tuner(trainer)
-    tuner.scale_batch_size(alpaca_model, datamodule=alpaca_datamodule, mode="power")
 
     trainer.fit(alpaca_model, alpaca_datamodule)
     try:
