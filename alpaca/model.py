@@ -52,18 +52,23 @@ class AlpacaLightningModule(LightningModule):
         self.tokenizer = self.hparams.tokenizer
         self._hf_pipeline = None
 
-    def setup(self, stage: str) -> None:
-        # enable deepspeed sharding
-        enable_transformers_pretrained_deepspeed_sharding(self)
-        self.initialize_model()
+    # def setup(self, stage: str) -> None:
+    #     # enable deepspeed sharding
+    #     enable_transformers_pretrained_deepspeed_sharding(self)
+    #     self.initialize_model()
 
-    def initialize_model(self):
-        if self.hparams.load_weights_from_hf_pretrained_model:
-            model = LlamaForCausalLM.from_pretrained(self.hparams.pretrained_model_name)
-        else:
-            config = LlamaConfig.from_pretrained(self.hparams.pretrained_model_name)
-            model = AutoModelForCausalLM.from_config(config=config)
-        self.model = model
+    def configure_sharded_model(self) -> None:
+        self.model = LlamaForCausalLM.from_pretrained(
+            self.hparams.pretrained_model_name
+        )
+
+    # def initialize_model(self):
+    #     if self.hparams.load_weights_from_hf_pretrained_model:
+    #         model = LlamaForCausalLM.from_pretrained(self.hparams.pretrained_model_name)
+    #     else:
+    #         config = LlamaConfig.from_pretrained(self.hparams.pretrained_model_name)
+    #         model = AutoModelForCausalLM.from_config(config=config)
+    #     self.model = model
 
     def on_fit_start(self) -> None:
         # resize model
