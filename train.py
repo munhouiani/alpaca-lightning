@@ -48,8 +48,9 @@ if __name__ == "__main__":
         devices="auto",
         max_epochs=max_epochs,
         deterministic=True,
-        strategy="deepspeed_stage_3",
+        strategy="deepspeed_stage_3_offload",
         precision="16-mixed",
+        accumulate_grad_batches=8,
         logger=[csv_logger, mlflow_logger],
     )
 
