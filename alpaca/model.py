@@ -88,21 +88,22 @@ class AlpacaLightningModule(LightningModule):
             lr=self.hparams.learning_rate,
             weight_decay=self.hparams.weight_decay,
         )
-
-        warmup_steps = math.ceil(
-            self.hparams.warmup_ratio * self.trainer.estimated_stepping_batches
-        )
-
-        lr_schedular = get_cosine_schedule_with_warmup(
-            optimizer=optimizer,
-            num_warmup_steps=warmup_steps,
-            num_training_steps=self.trainer.estimated_stepping_batches,
-        )
-
-        return {
-            "optimizer": optimizer,
-            "lr_scheduler": lr_schedular,
-        }
+        #
+        # warmup_steps = math.ceil(
+        #     self.hparams.warmup_ratio * self.trainer.estimated_stepping_batches
+        # )
+        #
+        # lr_schedular = get_cosine_schedule_with_warmup(
+        #     optimizer=optimizer,
+        #     num_warmup_steps=warmup_steps,
+        #     num_training_steps=self.trainer.estimated_stepping_batches,
+        # )
+        #
+        # return {
+        #     "optimizer": optimizer,
+        #     "lr_scheduler": lr_schedular,
+        # }
+        return optimizer
 
     def generate(self, text: str, **kwargs) -> Any:
         inputs = self.tokenizer(text, return_tensors="pt")
